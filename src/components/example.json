@@ -1,0 +1,29 @@
+[
+  {
+    "title": {
+      "text": "example title"
+    }
+  },
+  {
+    "header": {
+      "text": "exmaple header"
+    }
+  },
+  {
+    "text": {
+      "text": "Example of normal text block"
+    }
+  },
+  {
+    "image": {
+      "alt-text": "cute cat picture",
+      "src": "https://i.redd.it/8c4pgtjkvn831.jpg"
+    }
+  },
+  {
+    "button": {
+      "text": "example button",
+      "action": "action-id"
+    }
+  }
+]
