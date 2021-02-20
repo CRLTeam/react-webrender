@@ -49,7 +49,7 @@ export class Webrender extends Component {
             // console.log(this.rawDisplayData[i])
 
             for (const [key, value] of Object.entries(this.rawDisplayData[i])) {
-                // console.log(`${key}: ${value}`);
+                console.log(`${key}: ${value}`);
                 var lowerKey = key.toLowerCase();
                 console.log(value)
                 if (lowerKey === "title") {
@@ -105,7 +105,7 @@ export class Webrender extends Component {
                         if (isDefault === true) {
                             radioButtons.push(
                                 <div className="form-check">
-                                    <input class="form-check-input" type="radio" name={"radioButton" + i} id={"radioButton" + i} defaultChecked/>
+                                    <input class="form-check-input" type="radio" name={"radioButton"} id={"radioButton" + i} checked/>
                                     <label class="form-check-label" for={"radioButton" + i}>
                                         {text}
                                     </label>
@@ -114,7 +114,7 @@ export class Webrender extends Component {
                         } else {
                             radioButtons.push(
                                 <div className="form-check">
-                                    <input class="form-check-input" type="radio" name={"radioButton" + i} id={"radioButton" + i}/>
+                                    <input class="form-check-input" type="radio" name={"radioButton" } id={"radioButton" + i}/>
                                     <label class="form-check-label" for={"radioButton" + i}>
                                         {text}
                                     </label>
@@ -125,9 +125,9 @@ export class Webrender extends Component {
                     }
 
                     this.displayProcessed.push(
-                        <form>
+                        <div className="form-check">
                             {radioButtons}
-                        </form>
+                        </div>
 
                     );
                 } else if (lowerKey === "checkboxlist")  {
@@ -174,7 +174,48 @@ export class Webrender extends Component {
                         </form>
                         
                     );
-                }            
+                } else if (lowerKey === "shorttextinput") {
+                    let inputName = value.inputName;
+                    this.displayProcessed.push(
+                        <div className="form-group">
+                            <label for={inputName}>{inputName}</label>
+                            <input type="text" class="form-control" id={inputName} aria-describedby="Small input" placeholder={"Enter Text"}></input>
+                        </div>
+                        
+                    );
+                } else if (lowerKey === "shorttextinput") {
+                    let inputName = value.inputName;
+                    this.displayProcessed.push(
+                        <div className="form-group">
+                            <label for={inputName}>{inputName}</label>
+                            <input type="text" class="form-control" id={inputName} aria-describedby="Small input" placeholder={"Enter Text"}></input>
+                        </div>
+                    );
+                } else if (lowerKey === "paragraphinput") {
+                    let inputName = value.inputName;
+                    this.displayProcessed.push(
+                        <div className="form-group">
+                            <label for={inputName}>{inputName}</label>
+                            <textarea type="text" class="form-control" id={inputName} aria-describedby="Large input" placeholder={"Enter Text"}></textarea>
+                        </div>
+                    );
+                } else if (lowerKey === "dateinput") {
+                    let inputName = value.inputName;
+                    this.displayProcessed.push(
+                        <div className="form-group">
+                            <label for={inputName}>{inputName}</label>
+                            <input type="date" class="form-control" id={inputName} aria-describedby="Date input"></input>
+                        </div>
+                    );
+                } else if (lowerKey === "timeinput") {
+                    let inputName = value.inputName;
+                    this.displayProcessed.push(
+                        <div className="form-group">
+                            <label for={inputName}>{inputName}</label>
+                            <input type="time" class="form-control" id={inputName} aria-describedby="Time input"></input>
+                        </div>
+                    );
+                } 
             }
 
         }
