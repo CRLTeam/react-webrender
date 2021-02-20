@@ -21,7 +21,7 @@ function App() {
             </a>
             <ul class="nav">
               <li class="nav-item">
-                  <a class="nav-link active" href="/" >Ballot</a>
+                  <a class="nav-link active" href="/" >Home</a>
               </li>
             </ul>
         </nav>
