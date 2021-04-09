@@ -56,6 +56,7 @@ export class Webrender extends Component {
         this.displayProcessed = [];
 
         var displayLength = this.rawDisplayData.length
+        
 
         for (let i = 0; i < displayLength; i++) {
             // console.log(this.rawDisplayData[i])
@@ -63,6 +64,7 @@ export class Webrender extends Component {
             for (const [key, value] of Object.entries(this.rawDisplayData[i])) {
                 // console.log(`${key}: ${value}`);
                 var lowerKey = key.toLowerCase();
+                
                 // console.log(value)
                 if (lowerKey === "title") {
                     this.displayProcessed.push(<h1 className="display-1">{ value.text }</h1>);
@@ -116,13 +118,16 @@ export class Webrender extends Component {
                     
                 } else if (lowerKey === "radiobuttonlist")  {
                     var radioButtons = [];
+                    let fieldName = value.fieldName;
                     for (let i = 0; i < value.options.length; i++) {
                         let text = value.options[i].radioButton.text;
                         let isDefault = value.options[i].radioButton.isDefault;
+                        let radioName = fieldName + i;
+                        this.state[radioName] = false;
                         if (isDefault === true) {
                             radioButtons.push(
                                 <div className="form-check">
-                                    <input class="form-check-input" type="radio" name={"radioButton"} id={"radioButton" + i} checked/>
+                                    <input class="form-check-input" type="radio" checked={this.state[radioName]} onChange={this.handleInputChange} name={radioName} id={radioName} checked/>
                                     <label class="form-check-label" for={"radioButton" + i}>
                                         {text}
                                     </label>
@@ -131,8 +136,8 @@ export class Webrender extends Component {
                         } else {
                             radioButtons.push(
                                 <div className="form-check">
-                                    <input class="form-check-input" type="radio" name={"radioButton" } id={"radioButton" + i}/>
-                                    <label class="form-check-label" for={"radioButton" + i}>
+                                    <label class="form-check-label" for={radioName}>
+                                        <input class="form-check-input" type="radio" checked={this.state[radioName]} onChange={this.handleInputChange} name={radioName} id={radioName}/>
                                         {text}
                                     </label>
                                 </div> 
@@ -151,17 +156,22 @@ export class Webrender extends Component {
 
                     // TODO: Minselect/Maxselect client side verification for checkboxes
                     var checkboxes = [];
+                    let fieldName = value.fieldName;
                     for (let i = 0; i < value.options.length; i++) {
                         let text = value.options[i].checkBox.text;
-                            checkboxes.push(
-                                <div className="form-check">
-                                    <input class="form-check-input" type="checkbox" name="flexRadioDefault" id={"radioButton" + i}/>
-                                    <label class="form-check-label" for={"radioButton" + i}>
-                                        {text}
-                                    </label>
-                                </div> 
-                            );
-                        
+                        let checkboxName = fieldName + i;
+                        this.state[checkboxName] = false;
+
+
+
+                        checkboxes.push(
+                            <div className="form-check">
+                                <input class="form-check-input" type="checkbox" checked={this.state[checkboxName]} onChange={this.handleInputChange} name={checkboxName} id={checkboxName}/>
+                                <label class="form-check-label" for={checkboxName}>
+                                    {text}
+                                </label>
+                            </div> 
+                        );
                     }
 
                     this.displayProcessed.push(
@@ -172,6 +182,7 @@ export class Webrender extends Component {
                     );
                 } else if (lowerKey === "dropdownselect") {
                     var options = [];
+                    let fieldName = value.fieldName;
                     for (let i = 0; i < value.options.length; i++) {
                         let text = value.options[i].option.text;
                         console.log(text);
@@ -180,16 +191,12 @@ export class Webrender extends Component {
                             <option value={text}>{text}</option>
 
                         );
-                        
                     }
 
                     this.displayProcessed.push(
-                        <form>
-                            <select className="form-control">
-                                {options}
-                            </select>
-                        </form>
-                        
+                        <select className="form-control" name={fieldName} value={this.state[fieldName]} onChange={this.handleInputChange}>
+                            {options}
+                        </select>
                     );
                 } else if (lowerKey === "shorttextinput") {
                     let inputName = value.inputName;
@@ -197,9 +204,9 @@ export class Webrender extends Component {
                     this.displayProcessed.push(
                         <div className="form-group">
                             <label for={fieldName}>{inputName}</label>
+                            {this.state[fieldName]}
                             <input type="text" class="form-control" value={this.state[fieldName]} onChange={this.handleInputChange} name={fieldName} id={fieldName} aria-describedby="Small input" placeholder={"Enter Text"}></input>
                         </div>
-                        
                     );
                 } else if (lowerKey === "paragraphinput") {
                     let inputName = value.inputName;
@@ -212,21 +219,27 @@ export class Webrender extends Component {
                     );
                 } else if (lowerKey === "dateinput") {
                     let inputName = value.inputName;
+                    let fieldName = value.fieldName;
                     this.displayProcessed.push(
                         <div className="form-group">
                             <label for={inputName}>{inputName}</label>
-                            <input type="date" class="form-control" id={inputName} aria-describedby="Date input"></input>
+                            <input type="date" class="form-control" id={fieldName} name={fieldName} value={this.state[fieldName]} onChange={this.handleInputChange} aria-describedby="Date input"></input>
                         </div>
                     );
                 } else if (lowerKey === "timeinput") {
                     let inputName = value.inputName;
+                    let fieldName = value.fieldName;
                     this.displayProcessed.push(
                         <div className="form-group">
-                            <label for={inputName}>{inputName}</label>
-                            <input type="time" class="form-control" id={inputName} aria-describedby="Time input"></input>
+                            <label for={fieldName}>{inputName}</label>
+                            <input type="time" class="form-control" id={fieldName} name={fieldName} value={this.state[fieldName]} onChange={this.handleInputChange} aria-describedby="Time input"></input>
                         </div>
                     );
-                } 
+                } else if (lowerKey === "extraDataText") {
+                    this.displayProcessed.push(
+                        value.inputName
+                    );
+                }
             }
 
         }
@@ -265,7 +278,7 @@ export class Webrender extends Component {
         const target = event.target;
         const name = target.name;
 
-        const value = target.value; 
+        const value = target.type === 'checkbox' || target.type === 'radio' ? target.checked : target.value; 
     
         this.setState({
           [name]: value
@@ -279,6 +292,7 @@ export class Webrender extends Component {
         // Send state data to server
         // http://localhost:5000/callAction/6582837/0/action-000/default-role/en-CA
         // TODO: actionID needs to be made dynamic
+        console.log(this.state);
         await axios({
             method: "POST",
             url: `http://${this.serverName}/callPostAction/${this.instanceID}/${this.machineID}/action-000/${this.role}/${this.lang}`,
@@ -307,6 +321,7 @@ export class Webrender extends Component {
                 <div className="webrender">
                     <form onSubmit={this.handleSubmit}>
                         {this.displayProcessed}
+                            
                     </form>
                 </div>
             </>
