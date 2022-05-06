@@ -17,7 +17,7 @@ export class Webrender extends Component {
         this.currentState = "";
         this.lang = "en-CA"; // TODO: needs to be made dynamic
 
-        this.contextID = "12653896490267"; // TODO: contextID
+        this.contextID = "3177"; // TODO: contextID
         this.role = "default-role";
         this.serverName = "localhost:5000";
 
@@ -37,7 +37,8 @@ export class Webrender extends Component {
 
         await axios({
             method: "GET",
-            url: `http://${this.serverName}/callGetAction/${this.instanceID}/${this.machineID}/${actionID}/${this.role}/${this.lang}`,
+            url: `http://${this.serverName}/callAction/${this.instanceID}/${this.machineID}/${actionID}/${this.lang}`,
+            // url: `http://${this.serverName}/callGetAction/${this.instanceID}/${this.machineID}/${actionID}/${this.role}/${this.lang}`,
             headers: {
               "Content-Type": "application/json"
             }
@@ -48,6 +49,8 @@ export class Webrender extends Component {
             this.currentState = res.data.currentState;
             this.processDisplay();
             this.forceUpdate();
+        }).catch(e => {
+            console.log('error ', e)
         });
     }
 
@@ -127,7 +130,7 @@ export class Webrender extends Component {
                         if (isDefault === true) {
                             radioButtons.push(
                                 <div className="form-check">
-                                    <input class="form-check-input" type="radio" checked={this.state[radioName]} onChange={this.handleInputChange} name={radioName} id={radioName} checked/>
+                                    <input class="form-check-input" type="radio" checked={this.state[radioName]} onChange={this.handleInputChange} name={radioName} id={radioName}/>
                                     <label class="form-check-label" for={"radioButton" + i}>
                                         {text}
                                     </label>
@@ -252,6 +255,12 @@ export class Webrender extends Component {
         // var role = "default-role";
         // var serverName = "localhost:5000";
 
+        // await axios({
+        //     method: "GET",
+        //     url: (`http://${this.serverName}/createInstance/${this.contextID}/${this.role}/${this.lang}`),
+        //     headers: {
+        //       "Content-Type": "application/json"
+        //     }
         await axios({
             method: "GET",
             url: (`http://${this.serverName}/createInstance/${this.contextID}/${this.role}/${this.lang}`),
