@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react"
 
+import { FormGroup, InputGroup, Label, Classes, Button } from "@blueprintjs/core"
+
 export default function ButtonRender( {type, value, webrender} ){
     const [text, ] = useState(value.text)
     const [action, ] = useState(value.actionID)
@@ -51,9 +53,11 @@ export default function ButtonRender( {type, value, webrender} ){
             <input type="submit" value={text} className="btn btn-primary m-2 float-right" v-else-if="display_item.Button"/>
           } */}
           {type == 'button' &&
-            <button 
+            <div>
+              <Button 
               onClick={() => webrender.buttonClick(text, action, webrender)} 
-              type="button" className="btn btn-primary m-2 float-right" v-else-if="display_item.Button">{ text }</button>
+              intent='primary' className="btn btn-primary m-2 float-center">{ text }</Button>
+            </div>
           }
           {type == 'radiobuttonlist' &&
             <div className="form-check">

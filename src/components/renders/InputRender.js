@@ -1,9 +1,32 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
+import FormRender from "./FormRender";
 
 export default function InputRender( {type, value, webrender} ){
     const [fieldName, ] = useState(value.fieldName)
     const [inputName, ] = useState(value.inputName)
     
+  //   useEffect(()=>{
+  //     let content = [];
+
+  //     console.log('type ', value.type)
+  //     if(type == 'input'){
+  //       if(value.type == 'input'){
+
+  //       }
+  //         for (let i = 0; i < options.length; i++) {
+  //             let text = options[i].option.text;
+  //             // console.log(text);
+  //             content.push(
+
+  //                 <option value={text}>{text}</option>
+
+  //             );
+  //         }
+  //     }
+
+  //     // setOptionsContent(content)
+    
+  // }, []);
 
     return(
       <>
@@ -34,6 +57,10 @@ export default function InputRender( {type, value, webrender} ){
             <label for={fieldName}>{inputName}</label>
             <input type="time" class="form-control" id={fieldName} name={fieldName} value={fieldName} onChange={webrender.handleInputChange} aria-describedby="Time input"></input>
           </div>
+        }
+        {
+          type == 'input' &&
+          <FormRender  type={type} value={value} webrender={webrender}/>
         }
       </>
     )

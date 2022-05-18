@@ -26,10 +26,14 @@ export class Webrender extends Component {
             currentState: "",
             lang: "en-CA", // TODO: needs to be made dynamic
     
-            contextID: "3177", // TODO: contextID
+            // contextID: "3177", // TODO: contextID
+            contextID: "7794",
             role: "default-role",
             serverName: "localhost:5000",
-            state: {}
+            mongoServer: "localhost:3001",
+            state: {},
+            allStates: '',
+            data: {}
         };
       
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -79,9 +83,9 @@ export class Webrender extends Component {
         let buttonRenderKeys = ['button', 'radiobuttonlist']
         let menuRenderKeys = ['menu']
         let videoRenderKeys = ['video']
-        let listRenderKeys = ['checkboxlist']
+        let listRenderKeys = ['checkboxlist', 'list']
         let selectRenderKeys = ['dropdownselect']
-        let inputRenderKeys = ['shorttextinput', 'paragraphinput', 'dateinput', 'timeinput']
+        let inputRenderKeys = ['shorttextinput', 'paragraphinput', 'dateinput', 'timeinput', 'input']
 
         for (let i = 0; i < displayLength; i++) {
             // console.log(this.rawDisplayData[i])
@@ -89,7 +93,7 @@ export class Webrender extends Component {
             for (const [key, value] of Object.entries(this.state.rawDisplayData[i])) {
                 console.log(`${key}: ${JSON.stringify(value)}`);
                 let lowerKey = key.toLowerCase();
-                // console.log('LOWER KEY ', lowerKey)
+                console.log('LOWER KEY ', lowerKey)
                 
                 if (textRenderKeys.includes(lowerKey)) {
 
@@ -183,7 +187,8 @@ export class Webrender extends Component {
             this.setState({
                 instanceID: res.data.instanceID,
                 currentState: res.data.currentState,
-                rawDisplayData: res.data.displayObject
+                rawDisplayData: res.data.displayObject,
+                allStates: res.data.states
             })
         });
 
@@ -235,6 +240,61 @@ export class Webrender extends Component {
         });
 
         return false;
+    }
+
+    async get_object(obj_name) {
+        console.log("getting obj");
+        console.log('object name ', obj_name);
+        let data = ''
+
+        await axios({
+            method: 'GET',
+            url: `http://${this.state.mongoServer}/api/getInstance/${this.state.instanceID}`
+        }).then(res => {
+            console.log('res data ', res.data)
+            data = JSON.parse(res.data.data.data)
+            this.setState({data: data})
+        }).catch(e => {
+            console.log('error ', e)
+        });
+
+        return data
+    }
+
+    async save_object(obj_name, obj_data) {
+        console.log("saving obj");
+        console.log('object name ', obj_name);
+        console.log('object data ', obj_data);
+        let newData = ''
+        let currState= ''
+
+        await axios({
+            method: 'GET',
+            url: `http://${this.state.mongoServer}/api/getInstance/${this.state.instanceID}`
+        }).then(res => {
+            console.log('res data ', res.data)
+            newData = JSON.parse(res.data.data.data)
+            currState = JSON.parse(res.data.data.states)
+            newData[obj_name] = obj_data
+        }).catch(e => {
+            console.log('error ', e)
+        });
+
+        await axios({
+            method: 'PUT',
+            url: `http://${this.state.mongoServer}/api/updateInstanceData/${this.state.instanceID}`,
+            data: {
+                templateID: this.state.contextID,
+                role: this.state.role,
+                // context: data.context,
+                states: currState,
+                data: newData
+            }
+        }).then(res => {
+            console.log(res)
+        }).catch(e => {
+            console.log('error ', e)
+        });
     }
 
 
