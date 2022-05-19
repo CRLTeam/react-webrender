@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { Card } from "@blueprintjs/core"
+import { Card, Tag, Colors } from "@blueprintjs/core"
 
 export default function ListRender( {type, value, webrender} ){
     const [options, ] = useState(value.options)
@@ -20,7 +20,21 @@ export default function ListRender( {type, value, webrender} ){
           }
         }
         // setRenderList(content)
-      }, []);  
+      }, [, webrender.state.rerender]);  
+
+    // useEffect(()=>{
+
+    //   // if(type == 'list'){
+    //   //     let name = value.name
+    //   //     let list_type = value.type
+    //   //     if(list_type == 'object'){
+    //         // webrender.get_object(obj_name).then((res) => obj = res)
+    //         // get_object(value.object_name)
+    //         webrender.processDisplay()
+    //     //   }
+    //     // }
+    //     // setRenderList(content)
+    //   }, [webrender.state.data]); 
     
     const get_object = async(obj_name) => {
       let res = await webrender.get_object(obj_name)
@@ -36,9 +50,11 @@ export default function ListRender( {type, value, webrender} ){
         // console.log(' obj name ', objName)
 
           content.push(
-            <Card key={objName} interactive={false} elevation={2}>
-                <h2>{objName}</h2>
-              </Card>
+            // <Card key={JSON.stringify(objName)} interactive={false} elevation={2}>
+                // <Tag large={true} minimal={true} round={true}>
+                  <h2 key={`h2_${objName}`}>{objName}</h2>
+                // </Tag>
+              // </Card> 
           )
           if(type == 'list'){
             let objects = returnObj[objName]
@@ -49,14 +65,17 @@ export default function ListRender( {type, value, webrender} ){
                 // webrender.state[checkboxName] = false;
 
                 content.push(
-                    <Card key={obj} interactive={false} elevation={2}>
-                      <p>{obj}</p> 
-                      <h5>{objects[obj]}</h5>
-                    </Card>
+                    <div key={`div_${obj}`} style={{columnCount: 2}}>
+                      <span><p>{obj}</p></span>
+                      <span><p><b>{objects[obj]}</b></p></span>
+                    </div>
                 );
             }
           }
-          setRenderList(content)
+          setRenderList(
+            <Tag key={JSON.stringify(returnObj)} large={true} minimal={true} round={true} >
+              {content}
+            </Tag>)
         }
     }, [returnObj]);  
 

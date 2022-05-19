@@ -33,7 +33,8 @@ export class Webrender extends Component {
             mongoServer: "localhost:3001",
             state: {},
             allStates: '',
-            data: {}
+            data: {},
+            rerender: false
         };
       
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -261,7 +262,7 @@ export class Webrender extends Component {
         return data
     }
 
-    async save_object(obj_name, obj_data) {
+    async save_object(obj_name, obj_data, webrender) {
         console.log("saving obj");
         console.log('object name ', obj_name);
         console.log('object data ', obj_data);
@@ -290,11 +291,34 @@ export class Webrender extends Component {
                 states: currState,
                 data: newData
             }
-        }).then(res => {
-            console.log(res)
-        }).catch(e => {
-            console.log('error ', e)
-        });
+        }).then(async res => {
+                console.log(res.data)
+                // webrender.setState({
+                //     rawDisplayData: res.data.displayObject
+                // })
+                // console.log(webrender.state.rawDisplayData);
+                let data = JSON.parse(res.data.data.data)
+                let rerender = JSON.stringify(this.state.rerender)
+                this.setState({
+                    data: data,
+                    rerender: !JSON.parse(rerender)
+                })
+                webrender.processDisplay();
+            }).catch(e => {
+                console.log('error ', e)
+            });
+                
+        // await axios({
+        //     method: 'GET',
+        //     url: `http://${this.state.mongoServer}/api/getInstance/${this.state.instanceID}`
+        // }).then(res => {
+        //     this.setState({
+        //         instanceID: res.data.instanceID,
+        //         currentState: res.data.currentState,
+        //         rawDisplayData: res.data.displayObject,
+        //         allStates: res.data.states
+        //     })
+        // });
     }
 
 
@@ -302,11 +326,11 @@ export class Webrender extends Component {
         return(
             <>
                 <div className="webrender">
-                    <form onSubmit={this.handleSubmit}>
+                    {/* <form > */}
                         {console.log('DISPLAY PROCESSED IS ?????????? ', this.state.displayProcessed)}
                         {this.state.displayProcessed}
                             
-                    </form>
+                    {/* </form> */}
                 </div>
             </>
         )

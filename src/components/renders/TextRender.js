@@ -1,5 +1,8 @@
 import React, {useState} from 'react'
 
+import { Text, Classes, Tag } from "@blueprintjs/core"
+
+
 export default function TextRender( {type, value} ){
   const [bigText, ] = useState(value.text)
   const [smallText, ] = useState(value)
@@ -13,7 +16,7 @@ export default function TextRender( {type, value} ){
           <h3 className="h1">{ bigText }</h3>
         }
         {type == 'text' &&
-          <p className="text-left text-justify">{ smallText }</p>
+          <Text><p className="text-left text-justify">{ smallText }</p></Text>
         }
       </>
     )
