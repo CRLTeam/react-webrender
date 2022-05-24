@@ -208,9 +208,9 @@ export default function FormRender( {type, value, webrender} ){
             let obj_name = submit_form_data.save_object_data.object_name
             let obj_data = Object.assign({},formData)
             delete obj_data.submit_form
-            webrender.save_object(obj_name, obj_data, webrender)
+            webrender.save_object(obj_name, obj_data)
         } else{
-            webrender.buttonClick('action', action, webrender)
+            webrender.buttonClick('action', action)
         }
     }
     // webrender.processDisplay()
