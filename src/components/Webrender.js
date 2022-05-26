@@ -28,7 +28,8 @@ export class Webrender extends Component {
     
             // contextID: "3177", // TODO: contextID
             // contextID: "7794",
-            contextID: "3850", // new menu test
+            // contextID: "3850", // new up to date test (with menu)
+            contextID: "7806",
             role: "default-role",
             serverName: "localhost:5000",
             mongoServer: "localhost:3001",
