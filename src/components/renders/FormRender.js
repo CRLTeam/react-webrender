@@ -60,7 +60,8 @@ export default function FormRender( {type, value, webrender} ){
                 setFormData(fd)
                 // create optional tag
                 let optional = ''
-                input.optional ? optional='(optional)' : optional=''
+                let trues = [true,'true']
+                trues.includes(input.optional) ? optional='(optional)' : optional=''
                     if(input.type == 'text'){
                         content.push(
                             <div key={JSON.stringify(input)}>
@@ -149,7 +150,7 @@ export default function FormRender( {type, value, webrender} ){
                         content.push(
                             <div key={JSON.stringify(input)}>
                                 <Label>{input.label_text}<span className="bp4-text-muted"> {optional}</span></Label>
-                                <DatePicker
+                                <DatePicker 
                                     highlightCurrentDay={true}
                                     showActionsBar={true}
                                     value={formData.name}
@@ -208,9 +209,9 @@ export default function FormRender( {type, value, webrender} ){
             let obj_name = submit_form_data.save_object_data.object_name
             let obj_data = Object.assign({},formData)
             delete obj_data.submit_form
-            webrender.save_object(obj_name, obj_data, webrender)
+            webrender.save_object(obj_name, obj_data)
         } else{
-            webrender.buttonClick('action', action, webrender)
+            webrender.buttonClick('action', action)
         }
     }
     // webrender.processDisplay()

@@ -27,13 +27,16 @@ export class Webrender extends Component {
             lang: "en-CA", // TODO: needs to be made dynamic
     
             // contextID: "3177", // TODO: contextID
-            contextID: "7794",
+            // contextID: "7794",
+            // contextID: "3850", // new up to date test (with menu)
+            contextID: "7806",
             role: "default-role",
             serverName: "localhost:5000",
             mongoServer: "localhost:3001",
             state: {},
             allStates: '',
             data: {},
+            // force re-render
             rerender: false
         };
       
@@ -42,37 +45,43 @@ export class Webrender extends Component {
     }
 
 
-
-    // Calls an action when a button is pressed (also applied when menu option is pressed)
-    async buttonClick(button, actionID, webrender) {
+    /**
+     * Calls an action when a button is pressed
+     * @param {string} button       Button action name
+     * @param {string} actionID     Action ID of pressed button 
+     */
+    async buttonClick(button, actionID) {
         console.log("Button Pressed");
         console.log(button);
         console.log(actionID);
 
         await axios({
             method: "GET",
-            url: `http://${webrender.state.serverName}/callAction/${webrender.state.instanceID}/${webrender.state.machineID}/${actionID}/${webrender.state.lang}`,
+            url: `http://${this.state.serverName}/callAction/${this.state.instanceID}/${this.state.machineID}/${actionID}/${this.state.lang}`,
             // url: `http://${this.serverName}/callGetAction/${this.instanceID}/${this.machineID}/${actionID}/${this.role}/${this.lang}`,
             headers: {
               "Content-Type": "application/json"
             }
         }).then(res => {
+            // 
             console.log(res.data)
-            webrender.setState({
-                rawDisplayData: res.data.displayObject
-            })
-            console.log(webrender.state.rawDisplayData);
-            webrender.setState({
+            this.setState({
+                rawDisplayData: res.data.displayObject,
                 currentState: res.data.currentState
             })
-            webrender.processDisplay();
+            console.log(this.state.rawDisplayData);
+            // webrender.setState({
+            // })
+            this.processDisplay();
             // webrender.forceUpdate();
         }).catch(e => {
             console.log('error ', e)
         });
     }
 
-    // Converts the data in this.rawDisplayData into HTML and stores it in this.displayProcessed
+    /**
+     * Converts the data in state.rawDisplayData into HTML and stores it in state.displayProcessed
+     */
     processDisplay() {
         let display = [];
 
@@ -116,8 +125,6 @@ export class Webrender extends Component {
                     
                 } else if (menuRenderKeys.includes(lowerKey)) {
 
-                    // TODO: test this
-                    // TODO: this.state[nameofsomething] needs to be changed to use setState properly
                     display.push(
                         <MenuRender key={JSON.stringify(value)} type={lowerKey} value={value} webrender={this}/>
                     );
@@ -130,9 +137,6 @@ export class Webrender extends Component {
                     
                 } else if (listRenderKeys.includes(lowerKey))  {
 
-                    // TODO: Minselect/Maxselect client side verification for checkboxes
-                    // TODO: test this
-                    // TODO: this.state[nameofsomething] needs to be changed to use setState properly
                     display.push(
                         <ListRender key={JSON.stringify(value)} type={lowerKey} value={value} webrender={this}/>
                     );
@@ -159,13 +163,15 @@ export class Webrender extends Component {
             }
 
         }
-        // console.log('DISPLAY ', display)
         this.setState({
             displayProcessed: display
         })
 
     }
 
+    /**
+     * Create new instance when page is loaded
+     */
     async componentDidMount() {
         // template and role hard coded for now, needs to be dynamic
         // var template = "12653896490267"; 
@@ -193,16 +199,12 @@ export class Webrender extends Component {
             })
         });
 
-
-        // console.log(this.rawDisplayData)
-
         this.processDisplay();
-
-        // console.log(this.displayProcessed);
-
-        // this.forceUpdate();
     }
 
+    /**
+     * called when input changed, not used anymore
+     */
     handleInputChange(event) {
         const target = event.target;
         const name = target.name;
@@ -215,6 +217,9 @@ export class Webrender extends Component {
         console.log(this.state);
     }
     
+    /**
+     * Called when submitting form, not used anymore
+     */
     async handleSubmit(event) {
         event.preventDefault();
 
@@ -233,19 +238,17 @@ export class Webrender extends Component {
             }
         }).then(res => {
             console.log(res);
-            // this.rawDisplayData = res.data.displayObject;
-            // console.log(this.rawDisplayData);
-            // this.currentState = res.data.currentState;
-            // this.processDisplay();
-            // this.forceUpdate();
         });
 
         return false;
     }
 
+    /**
+     * Call database to get instance's data object
+     * @param {string} obj_name     Name of object to retrieve
+     * @returns {Object}            Object that was retrieved 
+     */
     async get_object(obj_name) {
-        console.log("getting obj");
-        console.log('object name ', obj_name);
         let data = ''
 
         await axios({
@@ -262,7 +265,7 @@ export class Webrender extends Component {
         return data
     }
 
-    async save_object(obj_name, obj_data, webrender) {
+    async save_object(obj_name, obj_data) {
         console.log("saving obj");
         console.log('object name ', obj_name);
         console.log('object data ', obj_data);
@@ -303,7 +306,7 @@ export class Webrender extends Component {
                     data: data,
                     rerender: !JSON.parse(rerender)
                 })
-                webrender.processDisplay();
+                this.processDisplay();
             }).catch(e => {
                 console.log('error ', e)
             });
